@@ -1,0 +1,4 @@
+# regenerate with: python generate_data.py
+data/
+__pycache__/
+*.pyc

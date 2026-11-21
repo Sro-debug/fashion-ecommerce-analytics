@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fashion Commerce Analytics</title>
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
+  --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --s1: #2a78d6; --s2: #eb6834; --good: #006300;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+    --s1: #3987e5; --s2: #d95926; --good: #0ca30c;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.10);
+  --s1: #3987e5; --s2: #d95926; --good: #0ca30c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -0.01em; }
+h2 { font-size: 20px; margin: 44px 0 4px; }
+h3 { font-size: 15px; margin: 0 0 2px; }
+.lede { color: var(--ink2); margin: 0 0 4px; max-width: 760px; }
+.note { color: var(--muted); font-size: 13px; margin: 0; }
+.sec-sub { color: var(--ink2); margin: 0 0 16px; max-width: 760px; }
+
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 24px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.tile .v { font-size: 26px; font-weight: 600; line-height: 1.15; }
+.tile .l { color: var(--ink2); font-size: 13px; margin-top: 2px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+#s-cat, #s-ops, #s-trend { grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.card.wide { grid-column: 1 / -1; }
+.card .sub { color: var(--ink2); font-size: 13px; margin: 0 0 10px; }
+.chart { position: relative; height: 270px; }
+.chart.tall { height: 340px; }
+details { margin-top: 10px; }
+summary { cursor: pointer; color: var(--ink2); font-size: 13px; }
+.tw { overflow-x: auto; margin-top: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { text-align: right; padding: 6px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+th { color: var(--ink2); font-weight: 600; }
+
+.insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; }
+.ins { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+.ins .tag { display: inline-block; font-size: 12px; font-weight: 600; color: var(--ink2);
+  border: 1px solid var(--grid); border-radius: 999px; padding: 1px 9px; margin-bottom: 8px; }
+.ins h3 { font-size: 16px; line-height: 1.3; margin-bottom: 6px; }
+.ins p { margin: 0 0 8px; color: var(--ink2); font-size: 14px; }
+.ins p.act { color: var(--ink); }
+.ins p.act b { color: var(--ink); }
+
+.heat td, .heat th { text-align: center; padding: 5px 8px; border: 2px solid var(--surface); }
+.heat td:first-child, .heat th:first-child { text-align: left; border-color: transparent; }
+.heat td.c { min-width: 52px; font-variant-numeric: tabular-nums; }
+.scale { display: flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 12px; color: var(--muted); }
+.scale i { display: block; width: 160px; height: 8px; border-radius: 4px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--s1) 8%, var(--surface)), var(--s1)); }
+.method { color: var(--ink2); font-size: 14px; }
+.method li { margin-bottom: 4px; }
+code { background: var(--grid); padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Fashion E-commerce Analytics</h1>
+  <p class="lede">Business-analytics case study on a Myntra-style fashion marketplace: where growth is profitable, where revenue leaks, and which customers and channels are worth paying for.</p>
+  <p class="note" id="scope"></p>
+  <div class="tiles" id="tiles"></div>
+
+  <h2>Key findings and what to do about them</h2>
+  <p class="sec-sub">Every number below is computed from the SQL queries in this repo, not typed in by hand.</p>
+  <div class="insights" id="insights"></div>
+
+  <h2>Growth and unit economics</h2>
+  <p class="sec-sub">Volume is not the problem. Margin in sale months is: contribution margin drops about ten points each time a big sale runs.</p>
+  <div class="grid" id="s-trend"></div>
+
+  <h2>Categories and discounting</h2>
+  <p class="sec-sub">Women's ethnic wear leads on both GMV and return rate. Beyond 50% off, returns rise and margin collapses.</p>
+  <div class="grid" id="s-cat"></div>
+
+  <h2>Sale events</h2>
+  <p class="sec-sub">Each event is compared with the 30 non-sale days before it, so business growth is not counted as sale lift.</p>
+  <div class="grid" id="s-events"></div>
+
+  <h2>Customers and acquisition</h2>
+  <p class="sec-sub">Retention cohorts, RFM segments and channel quality.</p>
+  <div class="grid" id="s-cust"></div>
+
+  <h2>Operations: payment mode, geography and returns</h2>
+  <p class="sec-sub">Cash-on-delivery in smaller cities is where cancellations and return-to-origin shipments concentrate.</p>
+  <div class="grid" id="s-ops"></div>
+
+  <h2>Method and assumptions</h2>
+  <ul class="method" id="method"></ul>
+</div>
+
+<script>__CHARTJS__</script>
+<script>
+const D = __DATA__;
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const el = html => { const d = document.createElement('div'); d.innerHTML = html.trim(); return d.firstChild; };
+const n0 = v => Number(v).toLocaleString('en-IN', {maximumFractionDigits: 0});
+const p1 = v => (v == null ? '' : Number(v).toFixed(1) + '%');
+const inr = v => '₹' + n0(v);
+const cr = v => '₹' + (v / 1e7).toFixed(2) + ' Cr';
+const T = () => {
+  const s = getComputedStyle(document.documentElement), g = n => s.getPropertyValue(n).trim();
+  return {ink: g('--ink'), ink2: g('--ink2'), muted: g('--muted'), grid: g('--grid'),
+          axis: g('--axis'), s1: g('--s1'), s2: g('--s2'), surface: g('--surface')};
+};
+function table(headers, rows) {
+  return `<div class="tw"><table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>` +
+    `<tbody>${rows.map(r => `<tr>${r.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+function addCard(sec, id, title, sub, tbl, opts = {}) {
+  $('#' + sec).appendChild(el(
+    `<article class="card${opts.wide ? ' wide' : ''}"><h3>${title}</h3><p class="sub">${sub}</p>` +
+    `<div class="chart${opts.tall ? ' tall' : ''}"><canvas id="${id}" role="img" aria-label="${title}"></canvas></div>` +
+    `<details><summary>Table view</summary>${tbl}</details></article>`));
+}
+
+/* ---------- chart factories (colors read from CSS tokens, so dark mode just re-renders) ---------- */
+let charts = [];
+function baseOpts(o = {}) {
+  const t = T();
+  const val = {beginAtZero: true, grid: {color: t.grid}, border: {display: false},
+    ticks: {color: t.muted, callback: o.yFmt || (v => v)},
+    title: {display: !!o.yTitle, text: o.yTitle || '', color: t.muted}};
+  const cat = {grid: {display: false}, border: {color: t.axis},
+    ticks: {color: t.muted, maxRotation: 0, autoSkip: o.autoSkip !== false, autoSkipPadding: 12}};
+  const h = !!o.horizontal;
+  return {
+    responsive: true, maintainAspectRatio: false, indexAxis: h ? 'y' : 'x',
+    interaction: {mode: 'index', intersect: false},
+    plugins: {
+      legend: {display: !!o.legend, position: 'top', align: 'start',
+        labels: {color: t.ink2, usePointStyle: true, boxWidth: 8, boxHeight: 8}},
+      tooltip: {callbacks: {label: c => ` ${c.dataset.label}: ${(o.tipFmt || (v => v))(c.parsed[h ? 'x' : 'y'])}`}}
+    },
+    scales: h ? {x: val, y: cat} : {x: cat, y: val}
+  };
+}
+const barDs = (label, data, color, surface, h) => ({label, data, backgroundColor: color, borderColor: surface,
+  borderWidth: 2, borderRadius: 4, borderSkipped: 'start', maxBarThickness: h ? 20 : 34});
+const lineDs = (label, data, color, surface) => ({label, data, borderColor: color, backgroundColor: color,
+  borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, pointHoverBorderColor: surface,
+  pointHoverBorderWidth: 2, tension: 0});
+function mk(id, type, labels, datasets, o) {
+  // bar charts must show every category label; only time axes may skip ticks
+  const opts = baseOpts(Object.assign({autoSkip: type !== 'bar'}, o));
+  charts.push(new Chart(document.getElementById(id), {type, data: {labels, datasets}, options: opts}));
+}
+
+/* ---------- static content ---------- */
+const K = D.kpi;
+$('#scope').textContent = `Synthetic data · ${D.scope}`;
+[
+  [cr(K.gmv), 'GMV (all orders placed)'], [cr(K.net_revenue), 'Net revenue (delivered, kept)'],
+  [p1(K.revenue_leakage_pct), 'Revenue leakage'], [p1(K.return_rate_pct), 'Item return rate'],
+  [p1(K.cancel_rto_pct), 'Orders cancelled or RTO'], [p1(K.contribution_margin_pct), 'Contribution margin'],
+  [inr(K.aov), 'Average order value'], [n0(K.orders), 'Orders']
+].forEach(([v, l]) => $('#tiles').appendChild(el(`<div class="tile"><div class="v">${v}</div><div class="l">${l}</div></div>`)));
+
+D.insights.forEach(i => $('#insights').appendChild(el(
+  `<article class="ins"><span class="tag">${i.tag}</span><h3>${i.head}</h3><p>${i.evidence}</p>` +
+  `<p class="act"><b>Action:</b> ${i.action}</p></article>`)));
+D.method.forEach(m => $('#method').appendChild(el(`<li>${m}</li>`)));
+
+/* ---------- cards (built once) ---------- */
+const M = D.monthly, ML = D.month_labels;
+addCard('s-trend', 'c-gmv', 'Monthly GMV vs net revenue', '₹ lakh. The gap between the lines is cancellations, RTO and returns.',
+  table(['Month', 'GMV (₹ lakh)', 'Net revenue (₹ lakh)', 'Leakage'], M.map((m, i) =>
+    [ML[i], (m.gmv / 1e5).toFixed(1), (m.net_revenue / 1e5).toFixed(1), p1(m.revenue_leakage_pct)])));
+addCard('s-trend', 'c-cm', 'Contribution margin % by month', 'After product cost, shipping, payment fees and reverse logistics. Dips line up with EORS, Big Fashion Festival and Republic Day months.',
+  table(['Month', 'Contribution margin', 'Return rate', 'Cancel + RTO'], M.map((m, i) =>
+    [ML[i], p1(m.contribution_margin_pct), p1(m.return_rate_pct), p1(m.cancel_rto_pct)])));
+
+const C = D.category;
+addCard('s-cat', 'c-catret', 'Return rate by category', '% of delivered items returned. Sorted high to low.',
+  table(['Category', 'GMV share', 'Avg discount', 'Return rate', 'Contribution margin'], C.map(c =>
+    [c.category, p1(c.gmv_share_pct), p1(c.avg_discount_pct), p1(c.return_rate_pct), p1(c.contribution_margin_pct)])));
+addCard('s-cat', 'c-catcm', 'Contribution margin by category', '% of net revenue, same category order as the chart on the left.',
+  table(['Category', 'Contribution (₹ lakh)', 'Contribution margin'], C.map(c =>
+    [c.category, (c.contribution / 1e5).toFixed(1), p1(c.contribution_margin_pct)])));
+const DB = D.discount;
+addCard('s-cat', 'c-discret', 'Return rate by discount depth', '% of delivered items returned.',
+  table(['Discount', 'Share of items', 'Return rate', 'Gross margin', 'Contribution margin', 'Contribution / item'], DB.map(d =>
+    [d.band, p1(d.share_of_items_pct), p1(d.return_rate_pct), p1(d.gross_margin_pct), p1(d.contribution_margin_pct), inr(d.contribution_per_item)])));
+addCard('s-cat', 'c-disccm', 'Contribution per item by discount depth', '₹ per item placed, after returns and logistics.',
+  table(['Discount', 'Avg selling price', 'Contribution / item'], DB.map(d =>
+    [d.band, inr(d.avg_selling_price), inr(d.contribution_per_item)])));
+
+const EV = D.events;
+addCard('s-events', 'c-events', 'Sale lift: orders vs contribution', '% change per day vs the 30 non-sale days before each event. Orders jump sharply in every event; contribution rises far less.',
+  table(['Event', 'Days', 'Orders/day', 'Baseline', 'Order lift', 'Discount', 'CM %', 'Baseline CM %', 'CM/day lift'], EV.map(e =>
+    [e.sale_event, e.days, n0(e.orders_per_day), n0(e.baseline_orders_per_day), e.order_lift_pct + '%', p1(e.avg_discount_pct),
+     p1(e.cm_margin_pct), p1(e.baseline_cm_margin_pct), e.cm_lift_pct + '%'])), {wide: true});
+
+/* cohort heatmap */
+(function () {
+  const H = D.cohort, cols = [1, 2, 3, 4, 5, 6];
+  let html = '<div class="tw"><table class="heat"><thead><tr><th>First-order month</th><th>Customers</th>' +
+    cols.map(c => `<th>M${c}</th>`).join('') + '</tr></thead><tbody>';
+  H.forEach(r => {
+    html += `<tr><td>${r.label}</td><td style="text-align:center">${n0(r.size)}</td>`;
+    r.ret.slice(1).forEach(v => {          // M0 is 100% by definition, so it is left out
+      if (v == null) { html += '<td class="c"></td>'; return; }
+      const w = 8 + Math.min(v, 30) / 30 * 88;
+      html += `<td class="c" style="background:color-mix(in srgb, var(--s1) ${w}%, var(--surface));color:${w > 55 ? '#fff' : 'var(--ink)'}">${v.toFixed(0)}%</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div><div class="scale">0%<i></i>30%+ of the cohort buying in that month</div>';
+  $('#s-cust').appendChild(el(`<article class="card wide"><h3>Monthly cohort retention</h3>` +
+    `<p class="sub">Share of each first-order cohort that bought again M months later. M0 (the first order) is 100% by definition, so it is left out. The diagonal bumps line up with June, October and December sales pulling lapsed customers back.</p>${html}</article>`));
+})();
+
+const R = D.rfm;
+addCard('s-cust', 'c-rfm', 'RFM segments: share of customers vs share of revenue', '% of all buyers and % of net revenue. A few segments carry most of the money.',
+  table(['Segment', 'Customers', '% customers', '% revenue', 'Avg orders', 'Avg recency (days)', 'Avg spend'], R.map(r =>
+    [r.segment, n0(r.customers), p1(r.customers_pct), p1(r.revenue_pct), r.avg_orders, n0(r.avg_recency_days), inr(r.avg_spend)])));
+const CH = D.channel;
+addCard('s-cust', 'c-chrep', '90-day repeat rate by acquisition channel', '% of buyers with a second order within 90 days of their first (cohorts with a full 90-day window only).',
+  table(['Channel', 'Buyers', 'Orders / buyer', '90-day repeat', 'Return rate', 'Net rev / buyer', 'Contribution / buyer', 'Assumed CAC', 'Contribution ÷ CAC'], CH.map(c =>
+    [c.acquisition_channel, n0(c.buyers), c.orders_per_buyer, p1(c.repeat_90d_pct), p1(c.return_rate_pct), inr(c.net_revenue_per_buyer),
+     inr(c.contribution_per_buyer), inr(c.assumed_cac), c.cm_to_cac.toFixed(1) + 'x'])));
+addCard('s-cust', 'c-chcm', 'Contribution per buyer by channel', '₹ over the observed period (about 10 months on average). This is the ceiling on what a channel can afford to pay per customer.',
+  table(['Channel', 'Contribution / buyer', 'Assumed CAC (illustrative)'], CH.map(c =>
+    [c.acquisition_channel, inr(c.contribution_per_buyer), inr(c.assumed_cac)])));
+
+const CD = D.cod;
+addCard('s-ops', 'c-cod', 'Contribution per order: prepaid vs COD', '₹ per order placed, by city tier.',
+  table(['Tier', 'Payment', 'Orders', 'Cancelled', 'RTO', 'Return rate', 'Contribution / order'], CD.map(c =>
+    ['Tier ' + c.city_tier, c.payment_type, n0(c.orders), p1(c.cancel_pct), p1(c.rto_pct), p1(c.return_pct), inr(c.contribution_per_order)])));
+addCard('s-ops', 'c-codleak', 'Cancelled + RTO share of orders', '% of orders placed that never produce revenue because of cancellation or return-to-origin.',
+  table(['Tier', 'Payment', 'Cancelled', 'RTO', 'Total'], CD.map(c =>
+    ['Tier ' + c.city_tier, c.payment_type, p1(c.cancel_pct), p1(c.rto_pct), p1(c.cancel_pct + c.rto_pct)])));
+const RS = D.reasons;
+addCard('s-ops', 'c-reasons', 'Why customers return (apparel and footwear)', 'Share of returned items by stated reason.',
+  table(['Reason', 'Returned items', 'Share'], RS.map(r => [r.reason, n0(r.items), p1(r.pct)])));
+const BR = D.brand;
+addCard('s-ops', 'c-brand', 'Contribution margin by brand type', '% of net revenue. Private labels discount hardest and still earn the most, because their cost base is lowest (mix effect, see notes).',
+  table(['Brand type', 'GMV share', 'Avg discount', 'Return rate', 'Gross margin', 'Contribution margin'], BR.map(b =>
+    [b.brand_type, p1(b.gmv_share_pct), p1(b.avg_discount_pct), p1(b.return_rate_pct), p1(b.gross_margin_pct), p1(b.contribution_margin_pct)])));
+
+/* ---------- render all charts ---------- */
+function renderAll() {
+  charts.forEach(c => c.destroy()); charts = [];
+  const t = T(), S = t.surface, pctAx = v => v + '%', lakhAx = v => v + 'L';
+  mk('c-gmv', 'line', ML, [lineDs('GMV', M.map(m => +(m.gmv / 1e5).toFixed(1)), t.s1, S),
+    lineDs('Net revenue', M.map(m => +(m.net_revenue / 1e5).toFixed(1)), t.s2, S)],
+    {legend: true, yFmt: lakhAx, yTitle: '₹ lakh', tipFmt: v => '₹' + v + ' lakh'});
+  mk('c-cm', 'line', ML, [lineDs('Contribution margin', M.map(m => m.contribution_margin_pct), t.s1, S)],
+    {yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  const cl = C.map(c => c.category);
+  mk('c-catret', 'bar', cl, [barDs('Return rate', C.map(c => c.return_rate_pct), t.s1, S, true)],
+    {horizontal: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  mk('c-catcm', 'bar', cl, [barDs('Contribution margin', C.map(c => c.contribution_margin_pct), t.s1, S, true)],
+    {horizontal: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  const dl = DB.map(d => d.band);
+  mk('c-discret', 'bar', dl, [barDs('Return rate', DB.map(d => d.return_rate_pct), t.s1, S)],
+    {yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  mk('c-disccm', 'bar', dl, [barDs('Contribution per item', DB.map(d => d.contribution_per_item), t.s1, S)],
+    {yFmt: v => '₹' + v, tipFmt: v => '₹' + v.toFixed(0)});
+  const el_ = EV.map(e => e.short);
+  mk('c-events', 'bar', el_, [barDs('Orders per day', EV.map(e => e.order_lift_pct), t.s1, S),
+    barDs('Contribution per day', EV.map(e => e.cm_lift_pct), t.s2, S)],
+    {legend: true, yFmt: pctAx, yTitle: '% lift vs prior 30 non-sale days', tipFmt: v => v + '%'});
+  mk('c-rfm', 'bar', R.map(r => r.segment), [barDs('% of customers', R.map(r => r.customers_pct), t.s1, S, true),
+    barDs('% of revenue', R.map(r => r.revenue_pct), t.s2, S, true)],
+    {horizontal: true, legend: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  const chl = CH.map(c => c.acquisition_channel);
+  mk('c-chrep', 'bar', chl, [barDs('90-day repeat', CH.map(c => c.repeat_90d_pct), t.s1, S, true)],
+    {horizontal: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  mk('c-chcm', 'bar', chl, [barDs('Contribution per buyer', CH.map(c => c.contribution_per_buyer), t.s1, S, true)],
+    {horizontal: true, yFmt: v => '₹' + n0(v), tipFmt: v => '₹' + n0(v)});
+  const tiers = ['Tier 1', 'Tier 2', 'Tier 3'];
+  const pick = (pt, f) => [1, 2, 3].map(x => CD.find(c => c.city_tier === x && c.payment_type === pt)[f]);
+  mk('c-cod', 'bar', tiers, [barDs('Prepaid', pick('Prepaid', 'contribution_per_order'), t.s1, S),
+    barDs('COD', pick('COD', 'contribution_per_order'), t.s2, S)],
+    {legend: true, yFmt: v => '₹' + v, tipFmt: v => '₹' + v.toFixed(0)});
+  const leak = pt => [1, 2, 3].map(x => { const c = CD.find(c => c.city_tier === x && c.payment_type === pt); return +(c.cancel_pct + c.rto_pct).toFixed(1); });
+  mk('c-codleak', 'bar', tiers, [barDs('Prepaid', leak('Prepaid'), t.s1, S), barDs('COD', leak('COD'), t.s2, S)],
+    {legend: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  mk('c-reasons', 'bar', RS.map(r => r.reason), [barDs('Share of returns', RS.map(r => r.pct), t.s1, S, true)],
+    {horizontal: true, yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+  mk('c-brand', 'bar', BR.map(b => b.brand_type), [barDs('Contribution margin', BR.map(b => b.contribution_margin_pct), t.s1, S)],
+    {yFmt: pctAx, tipFmt: v => v.toFixed(1) + '%'});
+}
+renderAll();
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+</script>
+</body>
+</html>

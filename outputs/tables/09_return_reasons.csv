@@ -1,0 +1,48 @@
+category,return_reason,returned_items,pct_of_category_returns
+Accessories,Damaged / defective,270,33.6
+Accessories,Changed my mind,244,30.3
+Accessories,Not as described,209,26.0
+Accessories,Wrong item received,81,10.1
+Beauty & Personal Care,Damaged / defective,132,33.1
+Beauty & Personal Care,Changed my mind,119,29.8
+Beauty & Personal Care,Not as described,111,27.8
+Beauty & Personal Care,Wrong item received,37,9.3
+Footwear,Size/Fit issue,2046,46.9
+Footwear,Not as shown in photos,933,21.4
+Footwear,Quality issue,640,14.7
+Footwear,Changed my mind,536,12.3
+Footwear,Wrong item received,209,4.8
+Home & Living,Not as described,74,31.0
+Home & Living,Changed my mind,71,29.7
+Home & Living,Damaged / defective,67,28.0
+Home & Living,Wrong item received,27,11.3
+Kids Wear,Size/Fit issue,376,46.7
+Kids Wear,Not as shown in photos,178,22.1
+Kids Wear,Quality issue,121,15.0
+Kids Wear,Changed my mind,94,11.7
+Kids Wear,Wrong item received,36,4.5
+Men Casual Wear,Size/Fit issue,1675,46.9
+Men Casual Wear,Not as shown in photos,803,22.5
+Men Casual Wear,Quality issue,456,12.8
+Men Casual Wear,Changed my mind,449,12.6
+Men Casual Wear,Wrong item received,188,5.3
+Men Formal Wear,Size/Fit issue,582,47.7
+Men Formal Wear,Not as shown in photos,273,22.4
+Men Formal Wear,Changed my mind,155,12.7
+Men Formal Wear,Quality issue,143,11.7
+Men Formal Wear,Wrong item received,66,5.4
+Sports & Active,Size/Fit issue,758,46.2
+Sports & Active,Not as shown in photos,353,21.5
+Sports & Active,Quality issue,242,14.8
+Sports & Active,Changed my mind,204,12.4
+Sports & Active,Wrong item received,82,5.0
+Women Ethnic Wear,Size/Fit issue,2134,46.7
+Women Ethnic Wear,Not as shown in photos,1006,22.0
+Women Ethnic Wear,Changed my mind,616,13.5
+Women Ethnic Wear,Quality issue,569,12.5
+Women Ethnic Wear,Wrong item received,242,5.3
+Women Western Wear,Size/Fit issue,2382,45.2
+Women Western Wear,Not as shown in photos,1201,22.8
+Women Western Wear,Quality issue,737,14.0
+Women Western Wear,Changed my mind,709,13.5
+Women Western Wear,Wrong item received,241,4.6

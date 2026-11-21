@@ -1,0 +1,7 @@
+city_tier,payment_type,orders,cancel_pct,rto_pct,return_pct,aov,contribution_per_order
+1,COD,4857,7.5,2.5,25.3,1888.0,335.1
+1,Prepaid,21738,4.3,0.0,20.5,1889.0,411.3
+2,COD,6476,8.0,5.1,25.2,1898.0,312.4
+2,Prepaid,15263,4.4,0.0,21.0,1894.0,386.8
+3,COD,6929,8.0,9.3,24.4,1894.0,257.9
+3,Prepaid,8393,4.1,0.0,20.9,1919.0,375.0
